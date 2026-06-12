@@ -6,7 +6,7 @@
 <title>LOOPR · RC-50 Loop Station</title>
 <style>
 :root{
-  --bg:#09090F;--panel:#111119;--card:#15151E;--card2:#1A1A24;--border:#1F1F2C;
+  --bg:#09090F;--panel:#111119;--card:#1C1C28;--card2:#212130;--border:#1F1F2C;
   --accent:#FFD60A;--green:#30D158;--red:#FF3B30;--orange:#FF9F0A;
   --yellow:#FFD60A;--blue:#64D2FF;--purple:#BF5AF2;
   --text:#E5E5EA;--muted:#48484E;--dim:#1E1E28;
@@ -131,8 +131,9 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 .tb-trig[data-s=STANDBY]    {background:#FFD60A14;border-color:#FFD60A44;color:var(--yellow)}
 
 /* DUB */
-.tb-dub{background:var(--dim);border-color:var(--border);color:var(--muted)}
+.tb-dub{background:var(--dim);border-color:var(--border);color:#333340}
 .tb-dub.dubbing{background:#FF9F0A1A;border-color:#FF9F0A55;color:var(--orange)}
+.tb-dub:disabled{opacity:.2}
 
 /* STOP */
 .tb-stop{background:var(--dim);border-color:var(--border);color:var(--muted)}
@@ -244,9 +245,6 @@ let playMode   = 'MULTI';
 let loopSync   = true;   // 同步所有軌道長度
 let countIn    = false;  // 錄音前計數一小節
 let autoRec    = false;  // 偵測聲音後自動開始錄音
-let metroOn    = false;  // 節拍器開關
-let loopQuant  = false;  // 錄音結束後對齊至最近拍點
-let metroNext  = 0;      // 下一個計數音的排程時間
 let metroOn    = false;  // 節拍器開關
 let loopQuant  = false;  // 錄音結束後對齊至最近拍點
 let metroNext  = 0;      // 下一個計數音的排程時間
@@ -852,7 +850,7 @@ function vuHTML(id) {
   for (let i = 0; i < SEGS; i++) {
     const h   = 22 + Math.round((i/SEGS)*78);
     const col = i<13?c:i<18?'#FFD60A':'#FF3B30';
-    s += `<div class="vu-s" id="vu${id}_${i}" style="height:${h}%;background:${col};opacity:.1"></div>`;
+    s += `<div class="vu-s" id="vu${id}_${i}" style="height:${h}%;background:${col};opacity:.2"></div>`;
   }
   return `<div class="vu">${s}</div>`;
 }
@@ -881,7 +879,7 @@ function trackHTML(t) {
   <div class="tc-hd">
     <div class="led led-${state}"></div>
     <div class="tc-meta">
-      <div class="tc-name" style="color:${state===S.EMPTY?'#303038':c}">${TRACK_NAMES[id]}</div>
+      <div class="tc-name" style="color:${state===S.EMPTY?c+'88':c}">${TRACK_NAMES[id]}</div>
       <div class="tc-state" style="color:${stateColor}">${stateLabel}</div>
       <div class="tc-loop-ct" id="lc${id}">${state===S.PLAYBACK&&loopCount?'×'+loopCount:''}</div>
     </div>
