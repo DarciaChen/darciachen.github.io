@@ -3,548 +3,718 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>LOOPR</title>
+<title>LOOPR · RC-50 Style Loop Station</title>
 <style>
-:root{
-  --bg:#090910;--card:#111119;--card2:#16161F;--border:#1E1E2A;
-  --accent:#FFD60A;--green:#30D158;--red:#FF3B30;--blue:#64D2FF;--purple:#BF5AF2;
-  --text:#E5E5EA;--muted:#44444E;
-  --font:'SF Mono','Courier New',monospace;
-}
+/* ── Reset & Base ── */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;padding-bottom:60px}
-button{cursor:pointer;border:none;outline:none;font-family:var(--font);-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0D0D12;--panel:#13131C;--card:#181822;--border:#22222E;
+  --accent:#FFD60A;--green:#30D158;--red:#FF3B30;--orange:#FF9F0A;--yellow:#FFD60A;
+  --blue:#64D2FF;--text:#E5E5EA;--muted:#48484E;--dim:#28282E;
+  --font:'SF Mono','Menlo','Courier New',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;padding-bottom:48px}
+button{cursor:pointer;border:none;outline:none;font-family:var(--font)}
+input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{background:var(--dim);height:4px;border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;margin-top:-6px}
+input[type=range]::-moz-range-track{background:var(--dim);height:4px;border-radius:2px}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:none}
+input[type=number]{background:var(--bg);border:1px solid var(--border);color:var(--accent);
+  font-family:var(--font);font-size:18px;font-weight:700;width:58px;text-align:center;
+  border-radius:6px;padding:4px 0;outline:none}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
 
-/* ── HEADER ── */
-#hdr{padding:20px 16px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.logo{font-size:22px;font-weight:700;letter-spacing:5px}
+/* ── Header ── */
+#hdr{
+  padding:20px 20px 16px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center
+}
+.logo{font-size:20px;font-weight:700;letter-spacing:6px}
 .logo em{color:var(--accent);font-style:normal}
-#loop-info{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
-#loop-bpm{font-size:13px;color:var(--accent);letter-spacing:2px;font-weight:700}
-#loop-len{font-size:10px;color:var(--muted);letter-spacing:2px}
+.logo small{font-size:9px;letter-spacing:2px;color:var(--muted);display:block;margin-top:2px}
 
-/* ── MASTER SECTION ── */
-#master{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.master-block{display:flex;flex-direction:column;gap:4px}
-.master-label{font-size:9px;color:var(--muted);letter-spacing:2px}
-
-/* BPM control */
-#bpm-wrap{display:flex;align-items:center;gap:6px}
-.bpm-btn{width:28px;height:28px;border-radius:6px;background:var(--card2);border:1px solid var(--border);color:var(--text);font-size:14px;display:flex;align-items:center;justify-content:center}
-#bpm-val{font-size:14px;font-weight:700;color:var(--accent);min-width:36px;text-align:center;letter-spacing:1px}
-
-/* Metronome toggle */
-#metro-btn{
-  height:36px;padding:0 14px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;
-  background:var(--card2);border:1px solid var(--border);color:var(--muted);transition:all .15s
+/* ── Global Controls ── */
+#global{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;gap:20px;align-items:center;flex-wrap:wrap
 }
-#metro-btn.on{background:#FFD60A22;border-color:#FFD60A66;color:var(--accent)}
-
-/* Master vol */
-#mvol-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:120px}
-#mvol-val{font-size:11px;color:var(--muted);min-width:28px;text-align:right;letter-spacing:1px}
-
-/* Reset */
-#reset-btn{height:36px;padding:0 14px;border-radius:8px;font-size:11px;letter-spacing:1px;background:var(--card2);border:1px solid var(--border);color:var(--muted)}
-
-/* Slider base */
-input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;height:20px}
-input[type=range]::-webkit-slider-runnable-track{background:var(--border);height:3px;border-radius:2px}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#fff;margin-top:-5.5px}
-input[type=range]::-moz-range-track{background:var(--border);height:3px;border-radius:2px}
-input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:none}
-
-/* ── TRACKS ── */
-#tracks{padding:12px 14px;display:flex;flex-direction:column;gap:8px}
-
-.track{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-@keyframes recGlow{0%,100%{border-color:#FF3B3033}50%{border-color:#FF3B3099}}
-@keyframes dubGlow{0%,100%{border-color:#FFD60A33}50%{border-color:#FFD60A88}}
-.track[data-state=recording]{animation:recGlow 1s infinite}
-.track[data-state=overdubbing]{animation:dubGlow 1s infinite}
-
-.track-top{padding:12px 12px 8px;display:flex;align-items:center;gap:10px}
-
-/* Main action button */
-.rec-btn{
-  width:52px;height:52px;border-radius:50%;font-size:15px;font-weight:700;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s
+.g-block{display:flex;flex-direction:column;gap:5px}
+.g-label{font-size:9px;letter-spacing:2px;color:var(--muted)}
+.bpm-row{display:flex;align-items:center;gap:6px}
+.bpm-arrow{
+  width:26px;height:26px;border-radius:6px;background:var(--dim);
+  border:1px solid var(--border);color:var(--text);font-size:13px;
+  display:flex;align-items:center;justify-content:center
 }
-.rec-btn[data-s=idle]       {background:#1A1A24;color:#3A3A46}
-.rec-btn[data-s=recording]  {background:var(--red);color:#fff;box-shadow:0 0 20px #FF3B3077}
-.rec-btn[data-s=overdubbing]{background:var(--accent);color:#0A0A0F;box-shadow:0 0 20px #FFD60A55}
-.rec-btn[data-s=playing]    {background:var(--green);color:#fff}
-.rec-btn[data-s=muted]      {background:#1A1A24;color:var(--green);border:2px solid #30D15844}
+.mvol-row{display:flex;align-items:center;gap:8px;min-width:130px}
+.mvol-row input{flex:1}
+.mvol-pct{font-size:11px;color:var(--muted);min-width:30px}
 
-/* Track body */
-.track-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+/* Play Mode radio */
+.mode-row{display:flex;gap:6px}
+.mode-btn{
+  padding:7px 14px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:1px;
+  background:var(--dim);border:1px solid var(--border);color:var(--muted);transition:all .15s
+}
+.mode-btn.active{background:#FFD60A22;border-color:#FFD60A55;color:var(--accent)}
 
-.track-row1{display:flex;justify-content:space-between;align-items:center}
-.track-label{font-size:11px;font-weight:700;letter-spacing:2px}
-.track-state{font-size:10px;letter-spacing:1px}
-.loop-count{font-size:10px;color:var(--muted);letter-spacing:1px}
+/* Global status */
+#g-status{
+  margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:3px
+}
+#loop-time{font-size:12px;color:var(--accent);letter-spacing:1px;font-weight:700}
+#sys-info{font-size:10px;color:var(--muted);letter-spacing:1px}
+
+/* ── Tracks ── */
+#tracks{padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+
+/* Track card */
+.tc{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;transition:border-color .2s
+}
+
+/* State-based glow animations */
+@keyframes recGlow  {0%,100%{border-color:#FF3B3033}50%{border-color:#FF3B3099}}
+@keyframes dubGlow  {0%,100%{border-color:#FF9F0A33}50%{border-color:#FF9F0A88}}
+@keyframes playGlow {0%,100%{border-color:#30D15833}50%{border-color:#30D15866}}
+.tc[data-state=RECORDING]  {animation:recGlow  1s infinite}
+.tc[data-state=OVERDUBBING]{animation:dubGlow  1.2s infinite}
+.tc[data-state=PLAYBACK]   {animation:playGlow 3s infinite}
+
+/* Track header row */
+.tc-head{padding:14px 14px 10px;display:flex;align-items:center;gap:12px}
+
+/* State LED */
+.led{
+  width:12px;height:12px;border-radius:50%;flex-shrink:0;
+  box-shadow:0 0 0 2px transparent;transition:all .2s
+}
+.led-EMPTY      {background:#2A2A36}
+.led-RECORDING  {background:var(--red);box-shadow:0 0 8px #FF3B30AA}
+.led-PLAYBACK   {background:var(--green);box-shadow:0 0 8px #30D158AA}
+.led-OVERDUBBING{background:var(--orange);box-shadow:0 0 8px #FF9F0AAA}
+.led-STOPPED    {background:var(--yellow);box-shadow:0 0 6px #FFD60A66}
+
+/* Track name + state label */
+.tc-meta{flex:1;min-width:0}
+.tc-name{font-size:12px;font-weight:700;letter-spacing:3px;margin-bottom:3px}
+.tc-state{font-size:10px;letter-spacing:2px}
+.tc-loops{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:1px}
 
 /* VU meter */
-.vu{display:flex;gap:2px;align-items:flex-end;height:16px}
-.vu-s{flex:1;border-radius:1px;transition:opacity .06s}
+.vu{display:flex;gap:2px;align-items:flex-end;height:20px;padding:0 2px}
+.vu-s{flex:1;border-radius:1px}
 
-/* Track vol */
-.track-vol{width:100%}
+/* Volume row */
+.tc-vol{padding:0 14px 10px;display:flex;align-items:center;gap:8px}
+.tc-vol input{flex:1}
+.tc-vol-val{font-size:10px;color:var(--muted);min-width:28px;text-align:right;letter-spacing:1px}
 
-/* Track controls row */
-.track-ctrl{display:flex;gap:6px;padding:0 12px 10px;flex-wrap:wrap}
-.ctrl-btn{
-  flex:1;min-width:50px;height:28px;border-radius:7px;font-size:10px;font-weight:700;
-  letter-spacing:1px;background:var(--card2);border:1px solid var(--border);color:var(--muted);
-  transition:all .15s
+/* Track buttons */
+.tc-btns{padding:0 14px 14px;display:flex;gap:8px}
+.tbtn{
+  flex:1;height:38px;border-radius:10px;font-size:11px;font-weight:700;
+  letter-spacing:1px;border:1px solid var(--border);transition:all .15s
 }
-.ctrl-btn.active{background:var(--card2);border-color:currentColor}
-.ctrl-btn.rev.active{color:var(--blue);border-color:#64D2FF55}
-.ctrl-btn.spd.active{color:var(--purple);border-color:#BF5AF255}
-.ctrl-btn.undo{color:#666}
-.ctrl-btn.undo:hover{color:var(--red)}
-.ctrl-btn.mute.active{color:var(--accent);border-color:#FFD60A55}
 
-/* Side delete */
-.del-btn{background:none;color:#252532;font-size:13px;padding:3px 5px;flex-shrink:0;align-self:flex-start;margin-top:2px;transition:color .15s}
-.del-btn:hover{color:var(--red)}
+/* Trigger button — state-colored */
+.tbtn-trigger[data-s=EMPTY]      {background:#1E1E2A;color:#44444E}
+.tbtn-trigger[data-s=RECORDING]  {background:#FF3B3020;border-color:#FF3B3066;color:var(--red)}
+.tbtn-trigger[data-s=PLAYBACK]   {background:#30D15820;border-color:#30D15866;color:var(--green)}
+.tbtn-trigger[data-s=OVERDUBBING]{background:#FF9F0A20;border-color:#FF9F0A66;color:var(--orange)}
+.tbtn-trigger[data-s=STOPPED]    {background:#FFD60A18;border-color:#FFD60A44;color:var(--yellow)}
 
-/* info */
-#info{padding:4px 16px 0;font-size:11px;color:var(--muted);letter-spacing:1px;min-height:20px}
-#err{margin:8px 14px 0;padding:9px 13px;background:#3D1A1A;border-radius:10px;color:var(--red);font-size:12px;display:none}
-#legend{margin-top:16px;padding:0 16px;text-align:center;font-size:10px;color:#252532;letter-spacing:1px;line-height:2}
+.tbtn-stop{background:var(--dim);color:var(--muted)}
+.tbtn-stop:active{background:#FF3B3022;color:var(--red)}
+.tbtn-undo{background:var(--dim);color:var(--muted)}
+.tbtn-undo:disabled{opacity:.3}
+.tbtn-undo:not(:disabled):active{background:#64D2FF22;color:var(--blue)}
+
+/* Trigger label mapping */
+.trig-label-EMPTY      {content:'● REC'}
+.trig-label-RECORDING  {content:'■ PLAY'}
+.trig-label-PLAYBACK   {content:'◎ DUB'}
+.trig-label-OVERDUBBING{content:'■ STOP DUB'}
+.trig-label-STOPPED    {content:'▶ PLAY'}
+
+/* ── Error / Info ── */
+#err{margin:8px 16px;padding:10px 14px;background:#3D1A1A;border-radius:10px;color:var(--red);font-size:12px;display:none}
+#info{padding:4px 20px 0;font-size:11px;color:var(--muted);letter-spacing:1px;min-height:18px}
 </style>
 </head>
 <body>
 
+<!-- Header -->
 <div id="hdr">
-  <div class="logo">LOOP<em>R</em></div>
-  <div id="loop-info">
-    <div id="loop-bpm">-- BPM</div>
-    <div id="loop-len">○ stopped</div>
+  <div>
+    <div class="logo">LOOP<em>R</em></div>
+    <div class="logo"><small>RC-50 STYLE LOOP STATION</small></div>
+  </div>
+  <div id="g-status">
+    <div id="loop-time">-- BPM</div>
+    <div id="sys-info">○ no loop</div>
   </div>
 </div>
 
-<div id="master">
-  <div class="master-block">
-    <div class="master-label">BPM</div>
-    <div id="bpm-wrap">
-      <button class="bpm-btn" onclick="changeBPM(-1)">−</button>
-      <div id="bpm-val">120</div>
-      <button class="bpm-btn" onclick="changeBPM(1)">+</button>
+<!-- Global Controls -->
+<div id="global">
+  <!-- BPM -->
+  <div class="g-block">
+    <div class="g-label">BPM</div>
+    <div class="bpm-row">
+      <button class="bpm-arrow" onclick="changeBPM(-1)">−</button>
+      <input type="number" id="bpm-input" value="120" min="40" max="240"
+        onchange="setBPMFromInput(this.value)" oninput="setBPMFromInput(this.value)">
+      <button class="bpm-arrow" onclick="changeBPM(1)">+</button>
     </div>
   </div>
 
-  <div class="master-block">
-    <div class="master-label">METRO</div>
-    <button id="metro-btn" onclick="toggleMetro()">♩ OFF</button>
-  </div>
-
-  <div class="master-block" style="flex:1;min-width:100px">
-    <div class="master-label">MASTER VOL</div>
-    <div id="mvol-wrap">
-      <input type="range" min="0" max="1" step="0.02" value="0.8" style="flex:1"
-        oninput="setMasterVol(this.value)">
-      <span id="mvol-val">80%</span>
+  <!-- Master Volume -->
+  <div class="g-block" style="flex:1;min-width:120px">
+    <div class="g-label">MASTER VOL</div>
+    <div class="mvol-row">
+      <input type="range" min="0" max="1" step="0.02" value="0.85" oninput="setMasterVol(this.value)">
+      <span class="mvol-pct" id="mvol-pct">85%</span>
     </div>
   </div>
 
-  <button id="reset-btn" onclick="resetAll()">RESET</button>
+  <!-- Play Mode -->
+  <div class="g-block">
+    <div class="g-label">PLAY MODE</div>
+    <div class="mode-row">
+      <button class="mode-btn active" id="mode-multi" onclick="setMode('MULTI')">MULTI</button>
+      <button class="mode-btn" id="mode-single" onclick="setMode('SINGLE')">SINGLE</button>
+    </div>
+  </div>
 </div>
 
-<div id="info">tap ● to record — tap again to overdub</div>
 <div id="err"></div>
+<div id="info">tap TRIGGER to start recording</div>
+
+<!-- Tracks -->
 <div id="tracks"></div>
 
-<div id="legend">
-  ● rec → ■ stop/play → tap again = OVERDUB → ■ = mix<br>
-  MUTE = silence track &nbsp;|&nbsp; REV = reverse &nbsp;|&nbsp; ½/2x = speed
-</div>
-
 <script>
-// ── Constants ──────────────────────────────────────────
-const COLORS  = ['#FF453A','#FF9F0A','#30D158','#64D2FF','#BF5AF2','#FF6B6B'];
-const MAX     = 6;
-const SEGS    = 20;
-const ICONS   = {idle:'●', recording:'●', overdubbing:'■', playing:'■', muted:'■'};
-const SLABELS = {idle:'READY', recording:'REC ●', overdubbing:'DUB ●', playing:'PLAY', muted:'MUTE'};
-const SCOLOR  = {idle:'#2A2A38', recording:'#FF3B30', overdubbing:'#FFD60A', playing:'#30D158', muted:'#2A2A38'};
+// ════════════════════════════════════════════════════════
+// 常數與設定
+// ════════════════════════════════════════════════════════
+const TRACK_COUNT = 3;
+const TRACK_COLORS = ['#FF453A', '#64D2FF', '#30D158'];
+const TRACK_NAMES  = ['TRACK 1', 'TRACK 2', 'TRACK 3'];
+const SEGS = 24; // VU meter 分段數
 
-// ── Audio engine ───────────────────────────────────────
-let ctx = null, micStream = null, micAnalyser = null;
-let masterGain = null;
-let masterLen  = null, loopStart = null;
-let recTrackId = null, recorder = null, chunks = [];
-let metroOn = false, metroBPM = 120, metroNext = 0, metroNode = null;
+// 狀態定義
+const S = { EMPTY:'EMPTY', RECORDING:'RECORDING', PLAYBACK:'PLAYBACK', OVERDUBBING:'OVERDUBBING', STOPPED:'STOPPED' };
 
-const sources   = {}, gains = {}, analysers = {}, buffers = {}, prevBuffers = {};
-const vols = {}, reversed = {}, speeds = {}, loopCounts = {};
-const trackStates = {};
-const smoothLevels = new Float32Array(MAX);
+// Trigger 按鈕文字對應狀態
+const TRIG_LABEL = {
+  EMPTY:'● REC', RECORDING:'■ STOP', PLAYBACK:'◎ DUB',
+  OVERDUBBING:'■ STOP DUB', STOPPED:'▶ PLAY'
+};
 
-for(let i=0;i<MAX;i++){
-  trackStates[i]='idle'; vols[i]=0.8; reversed[i]=false; speeds[i]=1; loopCounts[i]=0;
-}
+// ════════════════════════════════════════════════════════
+// 全域 Audio 引擎
+// ════════════════════════════════════════════════════════
+let audioCtx    = null;   // AudioContext 主實例
+let masterGain  = null;   // 主音量節點
+let micStream   = null;   // 麥克風 MediaStream
+let micAnalyser = null;   // 麥克風輸入電平分析
 
-// ── Init ───────────────────────────────────────────────
-async function initAudio(){
-  if(ctx){ if(ctx.state==='suspended') await ctx.resume(); return true; }
-  try{
-    ctx = new (window.AudioContext||window.webkitAudioContext)();
-    masterGain = ctx.createGain();
-    masterGain.gain.value = 0.8;
-    masterGain.connect(ctx.destination);
+let masterLoopLen = null; // 主循環長度（由第一軌決定），單位：秒
+let loopStartTime = null; // 循環開始的 audioCtx.currentTime
 
-    micStream = await navigator.mediaDevices.getUserMedia({
-      audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}
-    });
-    micAnalyser = ctx.createAnalyser();
-    micAnalyser.fftSize = 256;
-    ctx.createMediaStreamSource(micStream).connect(micAnalyser);
+let playMode = 'MULTI';   // 'MULTI' | 'SINGLE'
+let bpm = 120;
+
+// ════════════════════════════════════════════════════════
+// 軌道狀態（每軌獨立）
+// ════════════════════════════════════════════════════════
+const tracks = Array.from({length: TRACK_COUNT}, (_, i) => ({
+  id: i,
+  state: S.EMPTY,
+  buffer: null,       // AudioBuffer — 最終混音後的錄音資料
+  prevBuffer: null,   // 上一個 buffer（用於 Undo）
+  volume: 0.8,
+  loopCount: 0,
+  // 即時 Audio 節點
+  sourceNode:  null,  // AudioBufferSourceNode（播放用）
+  gainNode:    null,  // GainNode（音量控制）
+  analyserNode:null,  // AnalyserNode（VU meter）
+  // 錄音相關
+  mediaRecorder: null,
+  recordChunks:  [],
+  isFirstTrack: false, // 是否為決定 masterLoopLen 的第一軌
+}));
+
+// 平滑 VU 電平（每軌）
+const smoothLevels = new Float32Array(TRACK_COUNT);
+
+// ════════════════════════════════════════════════════════
+// 初始化 AudioContext 與麥克風
+// ════════════════════════════════════════════════════════
+async function initAudio() {
+  if (audioCtx) {
+    // iOS Safari 需要在使用者手勢後 resume
+    if (audioCtx.state === 'suspended') await audioCtx.resume();
     return true;
-  }catch(e){
-    showErr('⚠ 麥克風權限被拒絕，請在瀏覽器設定中允許');
+  }
+  try {
+    audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.85;
+    masterGain.connect(audioCtx.destination);
+
+    // 請求麥克風，關閉回音消除與自動增益以保留原始聲音
+    micStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+    });
+
+    // 建立麥克風輸入分析節點（用於錄音/疊錄時的 VU meter）
+    micAnalyser = audioCtx.createAnalyser();
+    micAnalyser.fftSize = 256;
+    audioCtx.createMediaStreamSource(micStream).connect(micAnalyser);
+
+    return true;
+  } catch(e) {
+    showErr('⚠ 無法存取麥克風：' + e.message + '。請確認已允許麥克風權限。');
     return false;
   }
 }
 
-function showErr(m){ const e=document.getElementById('err'); e.textContent=m; e.style.display='block'; }
-function setInfo(t){ document.getElementById('info').textContent=t; }
+// ════════════════════════════════════════════════════════
+// 音訊緩衝區混音（Overdub 核心）
+// ════════════════════════════════════════════════════════
+async function mixBuffers(existingBuf, newBuf) {
+  // 取兩個 buffer 中較長的長度作為輸出長度
+  const outLen = Math.max(existingBuf.length, newBuf.length);
+  const ch     = Math.max(existingBuf.numberOfChannels, newBuf.numberOfChannels);
+  const outBuf = audioCtx.createBuffer(ch, outLen, audioCtx.sampleRate);
 
-// ── Metronome ──────────────────────────────────────────
-function toggleMetro(){
-  metroOn = !metroOn;
-  const btn = document.getElementById('metro-btn');
-  btn.textContent = metroOn ? '♩ ON' : '♩ OFF';
-  btn.classList.toggle('on', metroOn);
-  if(metroOn && ctx) scheduleMetro();
-}
-
-function scheduleMetro(){
-  if(!metroOn || !ctx) return;
-  const now = ctx.currentTime;
-  const interval = 60 / metroBPM;
-  if(metroNext < now) metroNext = now;
-  while(metroNext < now + 0.3){
-    const osc = ctx.createOscillator();
-    const g   = ctx.createGain();
-    osc.frequency.value = 880;
-    g.gain.setValueAtTime(0.3, metroNext);
-    g.gain.exponentialRampToValueAtTime(0.001, metroNext + 0.05);
-    osc.connect(g); g.connect(ctx.destination);
-    osc.start(metroNext); osc.stop(metroNext + 0.06);
-    metroNext += interval;
-  }
-  setTimeout(scheduleMetro, 200);
-}
-
-function changeBPM(d){
-  metroBPM = Math.max(40, Math.min(240, metroBPM + d));
-  document.getElementById('bpm-val').textContent = metroBPM;
-  document.getElementById('loop-bpm').textContent = metroBPM + ' BPM';
-}
-
-// ── Master volume ──────────────────────────────────────
-function setMasterVol(v){
-  if(masterGain) masterGain.gain.value = parseFloat(v);
-  document.getElementById('mvol-val').textContent = Math.round(v*100)+'%';
-}
-
-// ── Playback ───────────────────────────────────────────
-function getReversedBuffer(buf){
-  const rev = ctx.createBuffer(buf.numberOfChannels, buf.length, buf.sampleRate);
-  for(let c=0;c<buf.numberOfChannels;c++){
-    const d = buf.getChannelData(c).slice().reverse();
-    rev.copyToChannel(d, c);
-  }
-  return rev;
-}
-
-function scheduleTrack(id, buf){
-  if(sources[id]){ try{sources[id].stop();}catch(e){} }
-  const gain = ctx.createGain();
-  gain.gain.value = trackStates[id]==='muted' ? 0 : (vols[id]??0.8);
-  gains[id] = gain;
-  const an = ctx.createAnalyser(); an.fftSize=256;
-  analysers[id] = an;
-  gain.connect(an); an.connect(masterGain);
-
-  const playBuf = reversed[id] ? getReversedBuffer(buf) : buf;
-  const src = ctx.createBufferSource();
-  src.buffer = playBuf;
-  src.loop = true;
-  src.loopEnd = playBuf.duration;
-  src.playbackRate.value = speeds[id] ?? 1;
-  src.connect(gain);
-
-  const now = ctx.currentTime;
-  const offset = loopStart ? ((now-loopStart)%masterLen)%playBuf.duration : 0;
-  src.start(now, offset);
-  sources[id] = src;
-  // count loops
-  src.onended = null;
-}
-
-// ── Overdub: mix two AudioBuffers ──────────────────────
-async function mixBuffers(buf1, buf2){
-  const len = Math.max(buf1.length, buf2.length);
-  const ch  = Math.max(buf1.numberOfChannels, buf2.numberOfChannels);
-  const out = ctx.createBuffer(ch, len, ctx.sampleRate);
-  for(let c=0;c<ch;c++){
-    const o  = out.getChannelData(c);
-    const d1 = c<buf1.numberOfChannels ? buf1.getChannelData(c) : new Float32Array(len);
-    const d2 = c<buf2.numberOfChannels ? buf2.getChannelData(c) : new Float32Array(len);
-    for(let i=0;i<len;i++){
-      o[i] = (i<d1.length?d1[i]:0)*0.7 + (i<d2.length?d2[i]:0)*0.7;
+  for (let c = 0; c < ch; c++) {
+    const outData = outBuf.getChannelData(c);
+    // 取得各 buffer 的聲道資料（若聲道數不足則用空陣列補）
+    const d1 = c < existingBuf.numberOfChannels ? existingBuf.getChannelData(c) : new Float32Array(outLen);
+    const d2 = c < newBuf.numberOfChannels       ? newBuf.getChannelData(c)      : new Float32Array(outLen);
+    for (let i = 0; i < outLen; i++) {
+      // 兩層各乘以 0.75 再相加，避免數位爆音（clipping）
+      outData[i] = (i < d1.length ? d1[i] : 0) * 0.75
+                 + (i < d2.length ? d2[i] : 0) * 0.75;
     }
   }
-  return out;
+  return outBuf;
 }
 
-// ── Recording ──────────────────────────────────────────
-function getMime(){
-  return['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4','']
-    .find(t=>!t||MediaRecorder.isTypeSupported(t))||'';
+// ════════════════════════════════════════════════════════
+// 播放軌道（從正確的 loop 位置對齊開始）
+// ════════════════════════════════════════════════════════
+function playTrack(t) {
+  // 先停止舊的 source node
+  stopSource(t);
+
+  const gain = audioCtx.createGain();
+  gain.gain.value = t.state === S.STOPPED ? 0 : t.volume;
+  t.gainNode = gain;
+
+  const an = audioCtx.createAnalyser();
+  an.fftSize = 256;
+  t.analyserNode = an;
+
+  gain.connect(an);
+  an.connect(masterGain);
+
+  const src = audioCtx.createBufferSource();
+  src.buffer   = t.buffer;
+  src.loop     = true;
+  src.loopEnd  = t.buffer.duration;
+  src.connect(gain);
+  t.sourceNode = src;
+
+  // 計算當前在 masterLoop 中的位置，確保所有軌道同步
+  const now    = audioCtx.currentTime;
+  const offset = loopStartTime
+    ? ((now - loopStartTime) % masterLoopLen) % t.buffer.duration
+    : 0;
+  src.start(now, offset);
 }
 
-async function startRec(id, isOverdub=false){
-  if(!await initAudio()) return;
-  if(recTrackId!==null) await finishRec(recTrackId);
-  recTrackId=id; chunks=[];
-  const mime=getMime();
-  recorder=new MediaRecorder(micStream,mime?{mimeType:mime}:{});
-  recorder.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
-  recorder.start(50);
-  trackStates[id] = isOverdub ? 'overdubbing' : 'recording';
-  setInfo(isOverdub ? `T${id+1} overdubbing… 點 ■ 完成疊錄` :
-    masterLen===null ? '錄音中… 點 ■ 停止（決定 loop 長度）' : '錄音中… 點 ■ 停止');
-  rerenderTrack(id);
+function stopSource(t) {
+  if (t.sourceNode) {
+    try { t.sourceNode.stop(); } catch(e) {}
+    t.sourceNode = null;
+  }
 }
 
-function finishRec(id){
-  return new Promise(res=>{
-    if(!recorder||recorder.state==='inactive'){res();return;}
-    const wasOverdub = trackStates[id]==='overdubbing';
-    recorder.onstop=async()=>{
-      try{
-        const blob=new Blob(chunks,{type:chunks[0]?.type||'audio/webm'});
-        const newBuf=await ctx.decodeAudioData(await blob.arrayBuffer());
+// ════════════════════════════════════════════════════════
+// 錄音開始
+// ════════════════════════════════════════════════════════
+function getMimeType() {
+  const types = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4',''];
+  return types.find(t => !t || MediaRecorder.isTypeSupported(t)) || '';
+}
 
-        if(wasOverdub && buffers[id]){
-          // Mix new recording with existing
-          prevBuffers[id] = buffers[id]; // save for undo
-          buffers[id] = await mixBuffers(buffers[id], newBuf);
+async function startRecording(t, isOverdub = false) {
+  if (!await initAudio()) return;
+
+  t.recordChunks = [];
+  const mime     = getMimeType();
+  const rec      = new MediaRecorder(micStream, mime ? { mimeType: mime } : {});
+
+  rec.ondataavailable = e => { if (e.data.size > 0) t.recordChunks.push(e.data); };
+  rec.start(50);
+  t.mediaRecorder = rec;
+  t.isFirstTrack  = (!isOverdub && masterLoopLen === null);
+}
+
+// ════════════════════════════════════════════════════════
+// 錄音結束（含 Overdub 混音）
+// ════════════════════════════════════════════════════════
+function stopRecording(t, isOverdub = false) {
+  return new Promise(resolve => {
+    const rec = t.mediaRecorder;
+    if (!rec || rec.state === 'inactive') { resolve(); return; }
+
+    rec.onstop = async () => {
+      try {
+        // 解碼 MediaRecorder 錄下的音訊資料
+        const blob    = new Blob(t.recordChunks, { type: t.recordChunks[0]?.type || 'audio/webm' });
+        const arrBuf  = await blob.arrayBuffer();
+        const newBuf  = await audioCtx.decodeAudioData(arrBuf);
+
+        if (isOverdub && t.buffer) {
+          // ── Overdub 混音 ──
+          // 保存舊 buffer 以便 Undo
+          t.prevBuffer = t.buffer;
+          // 將新錄音與現有錄音混合
+          t.buffer = await mixBuffers(t.buffer, newBuf);
         } else {
-          prevBuffers[id] = null;
-          buffers[id] = newBuf;
-          if(masterLen===null){
-            masterLen=newBuf.duration;
-            loopStart=ctx.currentTime;
-            updateStatus();
+          // ── 全新錄音 ──
+          t.prevBuffer = null;
+          t.buffer     = newBuf;
+
+          // 第一軌決定主循環長度
+          if (t.isFirstTrack) {
+            masterLoopLen = newBuf.duration;
+            loopStartTime = audioCtx.currentTime;
+            updateGlobalStatus();
           }
         }
-        scheduleTrack(id,buffers[id]);
-        trackStates[id]='playing';
-        setInfo(wasOverdub?`T${id+1} overdub 完成`:`T${id+1} playing`);
-      }catch(e){
-        trackStates[id]='idle';
-        setInfo('解碼失敗，請重試');
+
+        // 切換狀態並開始播放
+        setState(t, S.PLAYBACK);
+        playTrack(t);
+
+      } catch(err) {
+        showErr('解碼錄音失敗：' + err.message);
+        setState(t, S.EMPTY);
       }
-      recTrackId=null; rerenderTrack(id); res();
+      resolve();
     };
-    recorder.stop();
+    rec.stop();
   });
 }
 
-// ── Tap handler ────────────────────────────────────────
-async function tap(id){
-  const s=trackStates[id];
-  if(s==='idle')                      await startRec(id,false);
-  else if(s==='recording')            await finishRec(id);
-  else if(s==='playing')              await startRec(id,true);   // → overdub
-  else if(s==='overdubbing')          await finishRec(id);
-  else if(s==='muted'){
-    if(gains[id]) gains[id].gain.value=vols[id]??0.8;
-    trackStates[id]='playing'; rerenderTrack(id);
-  }
-}
+// ════════════════════════════════════════════════════════
+// 狀態機：Trigger 按鈕點擊
+// ════════════════════════════════════════════════════════
+async function onTrigger(id) {
+  const t = tracks[id];
 
-// ── Per-track controls ─────────────────────────────────
-function toggleMute(id){
-  const s=trackStates[id];
-  if(s==='playing'){
-    if(gains[id]) gains[id].gain.value=0;
-    trackStates[id]='muted'; setInfo(`T${id+1} muted`);
-  } else if(s==='muted'){
-    if(gains[id]) gains[id].gain.value=vols[id]??0.8;
-    trackStates[id]='playing'; setInfo(`T${id+1} playing`);
-  }
-  rerenderTrack(id);
-}
-
-function toggleReverse(id){
-  if(!buffers[id]) return;
-  reversed[id]=!reversed[id];
-  if(trackStates[id]==='playing'||trackStates[id]==='muted') scheduleTrack(id,buffers[id]);
-  rerenderTrack(id);
-}
-
-function cycleSpeed(id){
-  if(!buffers[id]) return;
-  const steps=[0.5,1,2];
-  const cur=steps.indexOf(speeds[id]);
-  speeds[id]=steps[(cur+1)%steps.length];
-  if(sources[id]) sources[id].playbackRate.value=speeds[id];
-  rerenderTrack(id);
-}
-
-function undoTrack(id){
-  if(!prevBuffers[id]) return;
-  buffers[id]=prevBuffers[id]; prevBuffers[id]=null;
-  if(trackStates[id]==='playing'||trackStates[id]==='muted') scheduleTrack(id,buffers[id]);
-  setInfo(`T${id+1} undo`); rerenderTrack(id);
-}
-
-function setVol(id,v){
-  vols[id]=parseFloat(v);
-  if(gains[id]&&trackStates[id]!=='muted') gains[id].gain.value=vols[id];
-}
-
-function delTrack(id){
-  if(sources[id]){try{sources[id].stop();}catch(e){}delete sources[id];}
-  delete gains[id];delete analysers[id];delete buffers[id];delete prevBuffers[id];
-  trackStates[id]='idle'; reversed[id]=false; speeds[id]=1; loopCounts[id]=0;
-  setInfo(`T${id+1} cleared`); rerenderTrack(id);
-}
-
-function resetAll(){
-  if(recorder&&recorder.state!=='inactive'){try{recorder.stop();}catch(e){}}
-  Object.values(sources).forEach(s=>{try{s.stop();}catch(e){}});
-  [sources,gains,analysers,buffers,prevBuffers].forEach(o=>Object.keys(o).forEach(k=>delete o[k]));
-  masterLen=null;loopStart=null;recTrackId=null;
-  for(let i=0;i<MAX;i++){trackStates[i]='idle';vols[i]=0.8;reversed[i]=false;speeds[i]=1;loopCounts[i]=0;}
-  updateStatus(); setInfo('tap ● to record — tap again to overdub');
-  document.getElementById('err').style.display='none';
-  renderAll();
-}
-
-// ── Status ─────────────────────────────────────────────
-function updateStatus(){
-  const el=document.getElementById('loop-len');
-  if(masterLen){ el.textContent='● '+masterLen.toFixed(2)+'s loop'; el.style.color='var(--green)'; }
-  else{ el.textContent='○ stopped'; el.style.color=''; }
-}
-
-// ── Loop counter (update every frame) ─────────────────
-function updateLoopCounts(){
-  if(!masterLen||!loopStart||!ctx) return;
-  const elapsed=(ctx.currentTime-loopStart);
-  for(let i=0;i<MAX;i++){
-    if(trackStates[i]==='playing'){
-      const n=Math.floor(elapsed/masterLen);
-      if(n!==loopCounts[i]){
-        loopCounts[i]=n;
-        const el=document.getElementById('lc'+i);
-        if(el) el.textContent='×'+n;
+  // SINGLE 模式：當其他軌道正在播放，先停止它們
+  if (playMode === 'SINGLE') {
+    for (const other of tracks) {
+      if (other.id !== id && (other.state === S.PLAYBACK || other.state === S.OVERDUBBING)) {
+        stopSource(other);
+        setState(other, S.STOPPED);
       }
     }
   }
-}
 
-// ── VU segments HTML ───────────────────────────────────
-function vuHTML(id){
-  const c=COLORS[id];
-  const segs=[];
-  for(let s=0;s<SEGS;s++){
-    const h=28+Math.round((s/SEGS)*72);
-    const col=s<12?c:s<17?'#FFD60A':'#FF3B30';
-    segs.push(`<div class="vu-s" id="vs${id}_${s}" style="height:${h}%;background:${col};opacity:.1"></div>`);
+  switch(t.state) {
+    case S.EMPTY:
+      // EMPTY → RECORDING：開始第一層錄音
+      setState(t, S.RECORDING);
+      await startRecording(t, false);
+      setInfo(`Track ${id+1} 錄音中…${masterLoopLen===null?' (第一軌將決定 loop 長度)':''}`);
+      break;
+
+    case S.RECORDING:
+      // RECORDING → PLAYBACK：停止錄音，自動開始循環播放
+      setInfo(`Track ${id+1} 處理中…`);
+      await stopRecording(t, false);
+      setInfo(`Track ${id+1} 播放中`);
+      break;
+
+    case S.PLAYBACK:
+      // PLAYBACK → OVERDUBBING：保持播放，同時開始疊錄新層
+      setState(t, S.OVERDUBBING);
+      await startRecording(t, true);
+      setInfo(`Track ${id+1} 疊錄中…`);
+      break;
+
+    case S.OVERDUBBING:
+      // OVERDUBBING → PLAYBACK：停止疊錄，混音後繼續播放
+      setInfo(`Track ${id+1} 混音中…`);
+      await stopRecording(t, true);
+      setInfo(`Track ${id+1} 疊錄完成，播放中`);
+      break;
+
+    case S.STOPPED:
+      // STOPPED → PLAYBACK：重新開始循環播放
+      if (t.buffer) {
+        setState(t, S.PLAYBACK);
+        playTrack(t);
+        setInfo(`Track ${id+1} 重新播放`);
+      }
+      break;
   }
-  return `<div class="vu">${segs.join('')}</div>`;
 }
 
-// ── Track HTML ─────────────────────────────────────────
-function trackHTML(i){
-  const s=trackStates[i],c=COLORS[i],v=vols[i];
-  const has=!!buffers[i];
-  const spd=speeds[i];
-  const spdLabel=spd===0.5?'½x':spd===2?'2x':'1x';
-  const hasPrev=!!prevBuffers[i];
+// ════════════════════════════════════════════════════════
+// Stop 按鈕：PLAYBACK/OVERDUBBING/RECORDING → STOPPED/EMPTY
+// ════════════════════════════════════════════════════════
+async function onStop(id) {
+  const t = tracks[id];
+  if (t.state === S.RECORDING || t.state === S.OVERDUBBING) {
+    // 如果在錄音中停止，先中斷 MediaRecorder
+    if (t.mediaRecorder && t.mediaRecorder.state !== 'inactive') {
+      t.mediaRecorder.stop();
+      t.mediaRecorder = null;
+    }
+  }
+  stopSource(t);
+  if (t.buffer) {
+    setState(t, S.STOPPED);
+    setInfo(`Track ${id+1} 已停止`);
+  } else {
+    setState(t, S.EMPTY);
+    setInfo(`Track ${id+1} 清空`);
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// Undo 按鈕：回到上一次 Overdub 前的 buffer
+// ════════════════════════════════════════════════════════
+function onUndo(id) {
+  const t = tracks[id];
+  if (!t.prevBuffer) return;
+  t.buffer     = t.prevBuffer;
+  t.prevBuffer = null;
+  if (t.state === S.PLAYBACK || t.state === S.STOPPED) {
+    playTrack(t);
+  }
+  setInfo(`Track ${id+1} Undo 完成`);
+  rerenderTrack(id);
+}
+
+// ════════════════════════════════════════════════════════
+// 音量控制
+// ════════════════════════════════════════════════════════
+function setTrackVol(id, v) {
+  const t = tracks[id];
+  t.volume = parseFloat(v);
+  if (t.gainNode && t.state !== S.STOPPED) t.gainNode.gain.value = t.volume;
+  const el = document.getElementById('vol-val-' + id);
+  if (el) el.textContent = Math.round(t.volume * 100) + '%';
+}
+
+function setMasterVol(v) {
+  if (masterGain) masterGain.gain.value = parseFloat(v);
+  document.getElementById('mvol-pct').textContent = Math.round(v * 100) + '%';
+}
+
+// ════════════════════════════════════════════════════════
+// BPM
+// ════════════════════════════════════════════════════════
+function changeBPM(d) {
+  bpm = Math.max(40, Math.min(240, bpm + d));
+  document.getElementById('bpm-input').value = bpm;
+  document.getElementById('loop-time').textContent = bpm + ' BPM';
+}
+function setBPMFromInput(v) {
+  bpm = Math.max(40, Math.min(240, parseInt(v) || 120));
+  document.getElementById('loop-time').textContent = bpm + ' BPM';
+}
+
+// ════════════════════════════════════════════════════════
+// Play Mode
+// ════════════════════════════════════════════════════════
+function setMode(m) {
+  playMode = m;
+  document.getElementById('mode-multi').classList.toggle('active', m==='MULTI');
+  document.getElementById('mode-single').classList.toggle('active', m==='SINGLE');
+}
+
+// ════════════════════════════════════════════════════════
+// 狀態更新 + 重繪
+// ════════════════════════════════════════════════════════
+function setState(t, newState) {
+  t.state = newState;
+  rerenderTrack(t.id);
+}
+
+function updateGlobalStatus() {
+  const el = document.getElementById('sys-info');
+  if (masterLoopLen) {
+    el.textContent = '● ' + masterLoopLen.toFixed(2) + 's loop';
+    el.style.color = 'var(--green)';
+  } else {
+    el.textContent = '○ no loop';
+    el.style.color = '';
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// VU Meter HTML 生成
+// ════════════════════════════════════════════════════════
+function vuHTML(id) {
+  const color = TRACK_COLORS[id];
+  let segs = '';
+  for (let s = 0; s < SEGS; s++) {
+    const h   = 25 + Math.round((s / SEGS) * 75);
+    const col = s < 14 ? color : s < 20 ? '#FFD60A' : '#FF3B30';
+    segs += `<div class="vu-s" id="vu-${id}-${s}"
+      style="height:${h}%;background:${col};opacity:.1;transition:opacity .05s"></div>`;
+  }
+  return `<div class="vu">${segs}</div>`;
+}
+
+// ════════════════════════════════════════════════════════
+// Track HTML 生成
+// ════════════════════════════════════════════════════════
+function trackHTML(t) {
+  const { id, state, volume, prevBuffer } = t;
+  const color    = TRACK_COLORS[id];
+  const hasUndo  = !!prevBuffer;
+  const canStop  = state !== S.EMPTY;
+  const volPct   = Math.round(volume * 100);
 
   return `
-<div class="track" id="tk${i}" data-state="${s}">
-  <div class="track-top">
-    <button class="rec-btn" data-s="${s}" onclick="tap(${i})">${ICONS[s]}</button>
-    <div class="track-body">
-      <div class="track-row1">
-        <span class="track-label" style="color:${s==='idle'?'#2A2A38':c}">T${i+1}</span>
-        <span class="track-state" style="color:${SCOLOR[s]};font-size:10px;letter-spacing:1px">${SLABELS[s]}</span>
-        <span class="loop-count" id="lc${i}">${has&&s==='playing'?'×'+loopCounts[i]:''}</span>
-      </div>
-      ${vuHTML(i)}
-      <input type="range" class="track-vol" min="0" max="1" step="0.02" value="${v}" oninput="setVol(${i},this.value)">
+<div class="tc" id="tc-${id}" data-state="${state}">
+  <div class="tc-head">
+    <!-- 狀態 LED 燈 -->
+    <div class="led led-${state}" id="led-${id}"></div>
+    <div class="tc-meta">
+      <div class="tc-name" style="color:${color}">${TRACK_NAMES[id]}</div>
+      <div class="tc-state" style="color:${
+        state===S.RECORDING?'var(--red)':state===S.PLAYBACK?'var(--green)':
+        state===S.OVERDUBBING?'var(--orange)':state===S.STOPPED?'var(--yellow)':'var(--muted)'
+      }">${state}</div>
+      <div class="tc-loops" id="tc-loops-${id}"></div>
     </div>
-    ${has?`<button class="del-btn" onclick="delTrack(${i})">✕</button>`:''}
+    <!-- VU Meter -->
+    ${vuHTML(id)}
   </div>
-  ${has?`
-  <div class="track-ctrl">
-    <button class="ctrl-btn mute ${s==='muted'?'active':''}" onclick="toggleMute(${i})">
-      ${s==='muted'?'MUTED':'MUTE'}
+
+  <!-- 音量滑桿 -->
+  <div class="tc-vol">
+    <input type="range" min="0" max="1" step="0.02" value="${volume}"
+      oninput="setTrackVol(${id},this.value)">
+    <span class="tc-vol-val" id="vol-val-${id}">${volPct}%</span>
+  </div>
+
+  <!-- 操作按鈕 -->
+  <div class="tc-btns">
+    <!-- Trigger 按鈕：顏色與文字隨狀態變化 -->
+    <button class="tbtn tbtn-trigger" data-s="${state}"
+      onclick="onTrigger(${id})" style="flex:2">
+      ${TRIG_LABEL[state]}
     </button>
-    <button class="ctrl-btn rev ${reversed[i]?'active':''}" onclick="toggleReverse(${i})">
-      ${reversed[i]?'REV ✓':'REV'}
+    <!-- Stop 按鈕 -->
+    <button class="tbtn tbtn-stop" onclick="onStop(${id})"
+      ${canStop?'':'disabled'} style="opacity:${canStop?1:.35}">
+      ◼ STOP
     </button>
-    <button class="ctrl-btn spd active" onclick="cycleSpeed(${i})" style="color:${spd!==1?'var(--purple)':'var(--muted)'}">
-      ${spdLabel}
+    <!-- Undo 按鈕（只有 Overdub 過才啟用） -->
+    <button class="tbtn tbtn-undo" onclick="onUndo(${id})"
+      ${hasUndo?'':'disabled'}>
+      ↺ UNDO
     </button>
-    <button class="ctrl-btn undo" onclick="undoTrack(${i})" ${hasPrev?'':'disabled'} style="opacity:${hasPrev?1:.3}">
-      UNDO
-    </button>
-  </div>`:''}
+  </div>
 </div>`;
 }
 
-function renderAll(){
-  document.getElementById('tracks').innerHTML=
-    Array.from({length:MAX},(_,i)=>trackHTML(i)).join('');
+// ════════════════════════════════════════════════════════
+// 渲染
+// ════════════════════════════════════════════════════════
+function renderAll() {
+  document.getElementById('tracks').innerHTML =
+    tracks.map(t => trackHTML(t)).join('');
 }
 
-function rerenderTrack(id){
-  const el=document.getElementById('tk'+id);
-  if(!el)return;
-  const t=document.createElement('div');
-  t.innerHTML=trackHTML(id);
-  el.parentNode.replaceChild(t.firstElementChild,el);
+function rerenderTrack(id) {
+  const el = document.getElementById('tc-' + id);
+  if (!el) return;
+  const tmp = document.createElement('div');
+  tmp.innerHTML = trackHTML(tracks[id]);
+  el.parentNode.replaceChild(tmp.firstElementChild, el);
 }
 
-// ── RMS helper ─────────────────────────────────────────
-function getRMS(an){
-  const d=new Uint8Array(an.frequencyBinCount);
+// ════════════════════════════════════════════════════════
+// RMS 計算（VU meter 用）
+// ════════════════════════════════════════════════════════
+function getRMS(an) {
+  const d = new Uint8Array(an.frequencyBinCount);
   an.getByteTimeDomainData(d);
-  let r=0; for(let i=0;i<d.length;i++){const v=(d[i]-128)/128;r+=v*v;}
-  return Math.sqrt(r/d.length);
+  let rms = 0;
+  for (let i = 0; i < d.length; i++) { const v = (d[i] - 128) / 128; rms += v * v; }
+  return Math.sqrt(rms / d.length);
 }
 
-// ── Main animation loop ────────────────────────────────
-(function loop(){
-  updateLoopCounts();
-  for(let i=0;i<MAX;i++){
-    const s=trackStates[i];
-    let raw=0;
-    if((s==='recording'||s==='overdubbing')&&micAnalyser) raw=getRMS(micAnalyser);
-    else if(s==='playing'&&analysers[i]) raw=getRMS(analysers[i]);
-    smoothLevels[i]=raw>smoothLevels[i]?raw*.8+smoothLevels[i]*.2:smoothLevels[i]*.84;
-    const lvl=Math.min(1,smoothLevels[i]*5);
-    for(let seg=0;seg<SEGS;seg++){
-      const el=document.getElementById('vs'+i+'_'+seg);
-      if(el) el.style.opacity = lvl>=(seg+1)/SEGS ? '1' : '.1';
+// ════════════════════════════════════════════════════════
+// 主動畫迴圈：VU meter + loop 計數
+// ════════════════════════════════════════════════════════
+(function animLoop() {
+  for (let i = 0; i < TRACK_COUNT; i++) {
+    const t = tracks[i];
+    let raw = 0;
+
+    // 錄音/疊錄中顯示麥克風輸入電平；播放中顯示播放電平
+    if ((t.state === S.RECORDING || t.state === S.OVERDUBBING) && micAnalyser) {
+      raw = getRMS(micAnalyser);
+    } else if (t.state === S.PLAYBACK && t.analyserNode) {
+      raw = getRMS(t.analyserNode);
+    }
+
+    // 平滑處理：快速上升、緩慢下降
+    smoothLevels[i] = raw > smoothLevels[i]
+      ? raw * 0.8 + smoothLevels[i] * 0.2
+      : smoothLevels[i] * 0.82;
+
+    const level = Math.min(1, smoothLevels[i] * 5);
+
+    // 更新每個 VU 分段的亮度
+    for (let s = 0; s < SEGS; s++) {
+      const seg = document.getElementById(`vu-${i}-${s}`);
+      if (seg) seg.style.opacity = level >= (s + 1) / SEGS ? '1' : '.1';
+    }
+
+    // 更新 loop 計數顯示
+    if (t.state === S.PLAYBACK && masterLoopLen && loopStartTime && audioCtx) {
+      const n = Math.floor((audioCtx.currentTime - loopStartTime) / masterLoopLen);
+      if (n !== t.loopCount) {
+        t.loopCount = n;
+        const el = document.getElementById('tc-loops-' + i);
+        if (el) el.textContent = '× ' + n;
+      }
     }
   }
-  requestAnimationFrame(loop);
+  requestAnimationFrame(animLoop);
 })();
 
+// ════════════════════════════════════════════════════════
+// 工具函式
+// ════════════════════════════════════════════════════════
+function setInfo(msg) { document.getElementById('info').textContent = msg; }
+function showErr(msg) {
+  const el = document.getElementById('err');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+// ── 啟動 ──
 renderAll();
-updateStatus();
+document.getElementById('loop-time').textContent = bpm + ' BPM';
 </script>
 </body>
 </html>
