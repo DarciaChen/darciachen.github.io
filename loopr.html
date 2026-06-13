@@ -213,7 +213,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
     <div class="g-block" style="flex:1;min-width:100px">
       <div class="g-label" id="lbl-mvol">MASTER VOL</div>
       <div class="mvol-row">
-        <input type="range" min="0" max="1" step="0.02" value="0.85" oninput="setMasterVol(this.value)">
+        <input type="range" min="0" max="2" step="0.02" value="1.0" oninput="setMasterVol(this.value)">
         <span class="mvol-pct" id="mvol-pct">85%</span>
       </div>
     </div>
@@ -354,7 +354,7 @@ async function initAudio() {
   try {
     audioCtx   = new (window.AudioContext || window.webkitAudioContext)();
     masterGain = audioCtx.createGain();
-    masterGain.gain.value = 0.85;
+    masterGain.gain.value = 1.5;
     masterGain.connect(audioCtx.destination);
     micStream = await navigator.mediaDevices.getUserMedia({
       audio:{ echoCancellation:false, noiseSuppression:false, autoGainControl:false }
@@ -408,7 +408,7 @@ async function mixBuffers(existing, newBuf) {
     const d1 = c < existing.numberOfChannels ? existing.getChannelData(c) : new Float32Array(len);
     const d2 = c < newBuf.numberOfChannels   ? newBuf.getChannelData(c)   : new Float32Array(len);
     for (let i = 0; i < len; i++)
-      o[i] = (i<d1.length?d1[i]:0)*0.75 + (i<d2.length?d2[i]:0)*0.75;
+      o[i] = (i<d1.length?d1[i]:0)*0.85 + (i<d2.length?d2[i]:0)*0.85;
   }
   return out;
 }
